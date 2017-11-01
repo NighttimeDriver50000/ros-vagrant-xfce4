@@ -1,0 +1,18 @@
+" Eclim Prereqs
+set nocompatible
+filetype plugin indent on
+
+" Powerline
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
+
+" Pathogen
+execute pathogen#infect()
+syntax on
+
+" Indentation: Scala encourages 2 spaces
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
