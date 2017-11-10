@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 mkdir -p logs
+chmod 777 logs
 exec >logs/StartInWM.log 2>&1
 TZ='America/New_York' date
 rm -f /tmp/.X1-lock
