@@ -44,13 +44,12 @@ WORKDIR /home/ros
 RUN chown ros:ros .
 RUN chown ros:ros *
 RUN chown -R ros:ros .[rv]*
-# Install Vundle
-#RUN curl -LSso /home/ros/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+# Install Pathogen
+RUN curl -LSso /home/ros/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 RUN apt-get install -y git cmake python-dev python3-dev
-RUN sudo -H -u ros git clone https://github.com/VundleVim/Vundle.vim.git /home/ros/.vim/bundle/Vundle.vim
-RUN vim +PluginInstall +qall
+RUN git clone https://github.com/Valloric/YouCompleteMe.git
 WORKDIR /home/ros/.vim/bundle/YouCompleteMe
-RUN ls
+RUN git submodule update --init --recursive
 RUN ./install.py --clang-completer
 # Run vim once
 RUN mv /home/ros/.vimrc.source /home/ros/.vimrc
