@@ -31,10 +31,29 @@ RUN sudo -H -u ros ln -s catkin_ws/zshrc /home/ros/.zshrc
 RUN apt-get install -y vim-gtk3
 # Set up vimrc
 ENV TERM xterm-256color
-RUN echo 'source ~/catkin_ws/vimrc' >>/home/ros/.vimrc
-# Set up Pathogen
+RUN touch /home/ros/.vimrc
+RUN cp /home/ros/.vimrc /home/ros/.vimrc.source
+RUN echo 'source ~/catkin_ws/vimrc' >>/home/ros/.vimrc.source
+ADD catkin_ws/vimrc /
+RUN cat /vimrc >>/home/ros/.vimrc
+RUN rm /vimrc
+# Prepare for Vundle
 RUN mkdir -p /home/ros/.vim/autoload /home/ros/.vim/bundle
-RUN curl -LSso /home/ros/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+# Chown home
+WORKDIR /home/ros
+RUN chown ros:ros .
+RUN chown ros:ros *
+RUN chown -R ros:ros .[rv]*
+# Install Vundle
+#RUN curl -LSso /home/ros/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+RUN apt-get install -y git cmake python-dev python3-dev
+RUN sudo -H -u ros git clone https://github.com/VundleVim/Vundle.vim.git /home/ros/.vim/bundle/Vundle.vim
+RUN vim +PluginInstall +qall
+WORKDIR /home/ros/.vim/bundle/YouCompleteMe
+RUN ls
+RUN ./install.py --clang-completer
+# Run vim once
+RUN mv /home/ros/.vimrc.source /home/ros/.vimrc
 WORKDIR /home/ros/.vim/bundle
 RUN sh -c 'echo ":quit" | vim -E'
 # Install ardupilot prerequisites

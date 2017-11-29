@@ -7,8 +7,14 @@ python3 from powerline.vim import setup as powerline_setup
 python3 powerline_setup()
 python3 del powerline_setup
 
-" Pathogen
-execute pathogen#infect()
+" Vundle
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'Valloric/YouCompleteMe'
+call vundle#end()
+filetype plugin indent on
+
 syntax on
 
 " Indentation: Scala encourages 2 spaces
