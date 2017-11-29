@@ -37,7 +37,7 @@ RUN echo 'source ~/catkin_ws/vimrc' >>/home/ros/.vimrc.source
 ADD catkin_ws/vimrc /
 RUN cat /vimrc >>/home/ros/.vimrc
 RUN rm /vimrc
-# Prepare for Vundle
+# Prepare for Pathogen
 RUN mkdir -p /home/ros/.vim/autoload /home/ros/.vim/bundle
 # Chown home
 WORKDIR /home/ros
@@ -46,7 +46,9 @@ RUN chown ros:ros *
 RUN chown -R ros:ros .[rv]*
 # Install Pathogen
 RUN curl -LSso /home/ros/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+# Install YouCompleteMe
 RUN apt-get install -y git cmake python-dev python3-dev
+WORKDIR /home/ros/.vim/bundle
 RUN git clone https://github.com/Valloric/YouCompleteMe.git
 WORKDIR /home/ros/.vim/bundle/YouCompleteMe
 RUN git submodule update --init --recursive
