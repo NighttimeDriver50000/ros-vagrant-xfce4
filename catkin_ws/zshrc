@@ -26,7 +26,7 @@ source /opt/ros/kinetic/setup.zsh
 
 # Catkin Workspace
 local catkin_setup=/home/ros/catkin_ws/devel/setup.zsh
-if [ -x "$catkin_setup" ]; then
+if [ -f "$catkin_setup" ]; then
     source "$catkin_setup"
 fi
 
