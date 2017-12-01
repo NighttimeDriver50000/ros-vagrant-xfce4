@@ -11,8 +11,11 @@ shift
 if [ "$1" = "--1080" ]; then
     Xvfb "$DISPLAY" -screen 0 1920x1080x24 &>logs/Xvfb.log &
     shift
-else
+elif [ "$1" = "--900" ]; then
     Xvfb "$DISPLAY" -screen 0 1600x900x24 &>logs/Xvfb.log &
+    shift
+else
+    Xvfb "$DISPLAY" -screen 0 1280x720x24 &>logs/Xvfb.log &
 fi
 sleep 1
 x11vnc -display "$DISPLAY" -nevershared -forever &>logs/x11vnc.log &
