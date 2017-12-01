@@ -37,3 +37,6 @@ alias stop='killall roscore'
 export PATH=$PATH:$HOME/jsbsim/src
 export PATH=$PATH:$HOME/ardupilot/Tools/autotest
 export PATH=/usr/lib/ccache:$PATH
+
+# Aliases
+alias ls='ls --color=auto'
