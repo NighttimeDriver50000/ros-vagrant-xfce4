@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 cd "$(dirname "$0")"
-if [ "$1" == 'u' ]; then
+if [ "$1" = 'u' ]; then
     vagrant up
     docker exec -it ros-vagrant sudo -H -u ros zsh
-elif [ "$1" == 'r' ]; then
+elif [ "$1" = 'r' ]; then
     vagrant up
     docker exec -it ros-vagrant bash
-elif [ "$1" == 'v' ]; then
+elif [ "$1" = 'v' ]; then
     vagrant status | grep '^default' | grep running
     running="$?"
     vagrant up
