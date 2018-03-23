@@ -1,0 +1,46 @@
+# You should ignore lines that start with '#'
+# This is everything that I know I can easily give you data for in the sim.
+# Some things may need to be added or removed, that's why it's a config file
+# and not hard-coded.
+#
+# format: identifier,type,unit,title,settable,range,default
+#
+# The first two are required, the last five are optional.
+#
+# Identifier (string): The key for accessing the field in sofware.
+# Type ("int"|"double"|"string"): The type of the field.
+# Unit (string) (default: ""): The unit of the field.
+# Title (string) (default: see): The display label for the field in the GUI.
+#       The default title should be the identifier, first letter capitalized.
+# Settable ("true"|"false") (default: false):
+#       Whether there should be a setter widget for the field.
+# Range (value-value|"all") (default: all):
+#       The range of good/valid/acceptable values for a numeric field.
+#       Note that range is ignored for string fields.
+# Default (value) (default: 0|""):
+#       A default value for the field. If a default is not specified, the
+#       default should be zero or the empty string.
+TODO
+battery,double,V,,false,10-14
+battery_percent,double,%,Battery %,false,0-100
+battery_status,int,*,Battery Status,false,0-4
+gps_status,int,*,GPS Status,false,-1-2,-1
+gps_service,int,*,GPS Service,false,0-15
+latitude,double,deg N,,true,-90-90
+longitude,double,deg E,,true,-180-180
+atm_pressure,double,Pa,Atmospheric Pressure,false,0-202650
+linear_accel_mag,double,m/s^2,Acceleration (Magnitude),false
+temperature,double,deg C,,false
+linear_vel_mag,double,m/s,Velocity (Magnitude),true
+reached_wp_seq,int,,Last Waypoint Reached,true
+connected,int,,,false,0-1
+armed,int,,,true,0-1
+guided,int,,,true,0-1
+mode,string,,,true
+sys_status,int,*,System Status,false
+time_ref_secs,int,s,Time Reference,false
+airspeed,double,m/s,,false
+groundspeed,double,m/s,,false
+heading,int,deg,,false
+throttle,double,%,,false
+altitude,double,m,,false
