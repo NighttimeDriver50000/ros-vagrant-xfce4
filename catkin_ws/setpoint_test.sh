@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 cd "$(dirname "$0")"
-catkin_make
+./make.sh
 kill_test() {
   pkill -f ardurover
   pkill -f mavproxy.py

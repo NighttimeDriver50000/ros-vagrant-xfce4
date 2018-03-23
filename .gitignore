@@ -7,3 +7,5 @@ logs
 mav.parm
 mav.tlog
 mav.tlog.raw
+id_rsa
+id_rsa.pub

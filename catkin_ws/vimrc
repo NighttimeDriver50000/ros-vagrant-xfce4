@@ -16,3 +16,9 @@ set expandtab
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
+
+" Dark Colorscheme
+colorscheme torte
+
+" Make Catkin Workspace
+nmap <leader>m :!/home/ros/catkin_ws/make.sh<cr>

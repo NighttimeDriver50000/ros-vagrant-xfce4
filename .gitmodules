@@ -1,0 +1,10 @@
+[submodule "catkin_ws/src/williamedwards/src"]
+	path = catkin_ws/src/williamedwards/src
+	url = https://NighttimeDriver50000@github.com/williamedwards/16JetyakSimulator.git
+	branch = mckinney
+[submodule "catkin_ws/src/jetyak_safety"]
+	path = catkin_ws/src/jetyak_safety
+	url = git@github.com:NighttimeDriver50000/jetyak_safety
+[submodule "jetyak_safety"]
+	path = jetyak_safety
+	url = git@github.com:NighttimeDriver50000/jetyak_safety

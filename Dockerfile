@@ -80,6 +80,11 @@ RUN chmod 777 /etc/authbind/byport/80
 # Install mavros
 RUN apt-get install -y nmap ros-kinetic-mavros
 RUN /opt/ros/kinetic/lib/mavros/install_geographiclib_datasets.sh
+# Set up SSH
+RUN mkdir -p /home/ros/.ssh
+RUN ln -s /home/ros/catkin_ws/ssh_config /home/ros/.ssh/config
+RUN ln -s /home/ros/catkin_ws/id_rsa /home/ros/.ssh/id_rsa
+RUN ln -s /home/ros/catkin_ws/id_rsa.pub /home/ros/.ssh/id_rsa.pub
 # Chown home
 WORKDIR /home/ros
 RUN chown ros:ros .
@@ -96,5 +101,8 @@ ADD StartInWM.bash /
 ADD roscore.bash /
 # Index the file system
 RUN updatedb
+# Use the SITL sim (Comment to disable)
+ENV SITL 1
+# WM on start
 #CMD ["bash", "/StartInWM.bash", "awesome"]
 CMD ["bash", "/StartInWM.bash", "awesome", "bash", "/roscore.bash"]

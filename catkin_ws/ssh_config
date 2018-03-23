@@ -1,0 +1,2 @@
+Host github.com
+    IdentityFile /home/ros/catkin_ws/id_rsa

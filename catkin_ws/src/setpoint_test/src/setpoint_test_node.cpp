@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
   // Create target pose message.
   geometry_msgs::PoseStamped target;
   target.pose.position.x = 200;
-  target.pose.position.y = 200;
+  target.pose.position.y = 0;
   target.pose.position.z = 0;
 
   // Send it 100 times before switching mode to ensure the FCU is already
