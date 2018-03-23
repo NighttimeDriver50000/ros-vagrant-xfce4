@@ -20,7 +20,9 @@
 # Default (value) (default: 0|""):
 #       A default value for the field. If a default is not specified, the
 #       default should be zero or the empty string.
-TODO
+#
+# The file actually starts here. The first line is an entry count:
+23
 battery,double,V,,false,10-14
 battery_percent,double,%,Battery %,false,0-100
 battery_status,int,*,Battery Status,false,0-4
