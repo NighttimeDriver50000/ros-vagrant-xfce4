@@ -1,0 +1,156 @@
+/mavros/cmd/arming
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandBool
+Args: value
+
+/mavros/cmd/command
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandLong
+Args: broadcast command confirmation param1 param2 param3 param4 param5 param6 param7
+
+/mavros/cmd/command_int
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandInt
+Args: broadcast frame command current autocontinue param1 param2 param3 param4 x y z
+
+/mavros/cmd/land
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandTOL
+Args: min_pitch yaw latitude longitude altitude
+
+/mavros/cmd/set_home
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandHome
+Args: current_gps latitude longitude altitude
+
+/mavros/cmd/takeoff
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandTOL
+Args: min_pitch yaw latitude longitude altitude
+
+/mavros/cmd/trigger_control
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/CommandTriggerControl
+Args: trigger_enable cycle_time
+
+/mavros/get_loggers
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: roscpp/GetLoggers
+Args: 
+
+/mavros/home_position/req_update
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: std_srvs/Trigger
+Args: 
+
+/mavros/mission/clear
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/WaypointClear
+Args: 
+
+/mavros/mission/pull
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/WaypointPull
+Args: 
+
+/mavros/mission/push
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/WaypointPush
+Args: start_index waypoints
+
+/mavros/mission/set_current
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/WaypointSetCurrent
+Args: wp_seq
+
+/mavros/param/get
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/ParamGet
+Args: param_id
+
+/mavros/param/pull
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/ParamPull
+Args: force_pull
+
+/mavros/param/push
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/ParamPush
+Args: 
+
+/mavros/param/set
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/ParamSet
+Args: param_id value
+
+/mavros/set_logger_level
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: roscpp/SetLoggerLevel
+Args: logger level
+
+/mavros/set_mode
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/SetMode
+Args: base_mode custom_mode
+
+/mavros/set_stream_rate
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/StreamRate
+Args: stream_id message_rate on_off
+
+/mavros/setpoint_position/mav_frame
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/SetMavFrame
+Args: mav_frame
+
+/mavros/setpoint_velocity/mav_frame
+Node: /mavros
+URI: rosrpc://badc04f1ec4d:46319
+Type: mavros_msgs/SetMavFrame
+Args: mav_frame
+
+/rosout/get_loggers
+Node: /rosout
+URI: rosrpc://badc04f1ec4d:45795
+Type: roscpp/GetLoggers
+Args: 
+
+/rosout/set_logger_level
+Node: /rosout
+URI: rosrpc://badc04f1ec4d:45795
+Type: roscpp/SetLoggerLevel
+Args: logger level
+
+/setpoint_test_node/get_loggers
+Node: /setpoint_test_node
+URI: rosrpc://badc04f1ec4d:51589
+Type: roscpp/GetLoggers
+Args: 
+
+/setpoint_test_node/set_logger_level
+Node: /setpoint_test_node
+URI: rosrpc://badc04f1ec4d:51589
+Type: roscpp/SetLoggerLevel
+Args: logger level
+

@@ -1,0 +1,250 @@
+/mavlink/from
+Type: mavros_msgs/Mavlink
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/battery
+Type: sensor_msgs/BatteryState
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/global_position/compass_hdg
+Type: std_msgs/Float64
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/global_position/global
+Type: sensor_msgs/NavSatFix
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+
+/mavros/global_position/local
+Type: nav_msgs/Odometry
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/global_position/raw/fix
+Type: sensor_msgs/NavSatFix
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/global_position/raw/gps_vel
+Type: geometry_msgs/TwistStamped
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/global_position/rel_alt
+Type: std_msgs/Float64
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/home_position/home
+Type: mavros_msgs/HomePosition
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/imu/atm_pressure
+Type: sensor_msgs/FluidPressure
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/imu/data
+Type: sensor_msgs/Imu
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/imu/data_raw
+Type: sensor_msgs/Imu
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/imu/mag
+Type: sensor_msgs/MagneticField
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/imu/temperature
+Type: sensor_msgs/Temperature
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/local_position/odom
+Type: nav_msgs/Odometry
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/local_position/pose
+Type: geometry_msgs/PoseStamped
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+
+/mavros/local_position/velocity
+Type: geometry_msgs/TwistStamped
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/mission/reached
+Type: mavros_msgs/WaypointReached
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/mission/waypoints
+Type: mavros_msgs/WaypointList
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/rc/in
+Type: mavros_msgs/RCIn
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/rc/out
+Type: mavros_msgs/RCOut
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/setpoint_position/local
+Type: geometry_msgs/PoseStamped
+
+Publishers: 
+ * /setpoint_test_node (http://badc04f1ec4d:36541/)
+
+Subscribers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+
+/mavros/state
+Type: mavros_msgs/State
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: 
+ * /setpoint_test_node (http://badc04f1ec4d:36541/)
+
+
+/mavros/time_reference
+Type: sensor_msgs/TimeReference
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/mavros/vfr_hud
+Type: mavros_msgs/VFR_HUD
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: None
+
+
+/rosout
+Type: rosgraph_msgs/Log
+
+Publishers: 
+ * /setpoint_test_node (http://badc04f1ec4d:36541/)
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: 
+ * /rosout (http://badc04f1ec4d:37439/)
+
+
+/tf_static
+Type: tf2_msgs/TFMessage
+
+Publishers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+Subscribers: 
+ * /mavros (http://badc04f1ec4d:44793/)
+
+
