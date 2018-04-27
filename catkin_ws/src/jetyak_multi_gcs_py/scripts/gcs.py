@@ -10,6 +10,7 @@ import sys
 
 import rospy
 import geometry_msgs.msg
+import mavros_msgs.srv
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -115,6 +116,10 @@ def load_status_labels(config_file):
     return labels
 
 
+def connect_service_button(button, proxy, *args):
+    button.connect('clicked', lambda widget: proxy(*args))
+
+
 class StatusWidget (Gtk.Notebook):
     def __init__(self):
         Gtk.Notebook.__init__(self)
@@ -122,9 +127,13 @@ class StatusWidget (Gtk.Notebook):
         with open(STATUS_CONFIG_FILEPATH) as f:
             self.status_labels = load_status_labels(f)
 
-        self.append_page(self.create_grid(), Gtk.Label('Status'))
+        self.set_arm = rospy.ServiceProxy('/mavros/cmd/arming', mavros_msgs.srv.CommandBool)
+        self.set_mode = rospy.ServiceProxy('/mavros/set_mode', mavros_msgs.srv.SetMode)
 
-    def create_grid(self):
+        self.append_page(self.create_status_grid(), Gtk.Label('Status'))
+        self.append_page(self.create_action_grid(), Gtk.Label('Actions'))
+
+    def create_status_grid(self):
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
         size = int(math.ceil(math.sqrt(len(self.status_labels))))
@@ -133,6 +142,34 @@ class StatusWidget (Gtk.Notebook):
             grid.insert_column(i)
         for i, label in enumerate(self.status_labels.itervalues()):
             grid.attach(label, i % size, i / size, 1, 1)
+        return grid
+
+    def create_action_grid(self):
+        grid = Gtk.Grid()
+        grid.set_column_spacing(8)
+        for i in xrange(2):
+            grid.insert_column(i)
+        for i in xrange(4):
+            grid.insert_row(i)
+        arm_button = Gtk.Button.new_with_label('Arm')
+        connect_service_button(arm_button, self.set_arm, True)
+        grid.attach(arm_button, 0, 0, 1, 1)
+        disarm_button = Gtk.Button.new_with_label('Disarm')
+        connect_service_button(disarm_button, self.set_arm, False)
+        grid.attach(disarm_button, 1, 0, 1, 1)
+        grid.attach(Gtk.Label('Modes'), 0, 1, 2, 1)
+        manual_button = Gtk.Button.new_with_label('Manual')
+        connect_service_button(manual_button, self.set_mode, 0, 'MANUAL')
+        grid.attach(manual_button, 0, 2, 1, 1)
+        hold_button = Gtk.Button.new_with_label('Hold')
+        connect_service_button(hold_button, self.set_mode, 0, 'HOLD')
+        grid.attach(hold_button, 1, 2, 1, 1)
+        auto_button = Gtk.Button.new_with_label('Auto')
+        connect_service_button(auto_button, self.set_mode, 0, 'AUTO')
+        grid.attach(auto_button, 0, 3, 1, 1)
+        guided_button = Gtk.Button.new_with_label('Guided')
+        connect_service_button(guided_button, self.set_mode, 0, 'GUIDED')
+        grid.attach(guided_button, 1, 3, 1, 1)
         return grid
 
 
