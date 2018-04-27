@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 import array
+import math
 import sys
 
 import rospy
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GdkPixbuf
+from gi.repository import Gtk, GdkPixbuf, Gdk, GLib
 
 import cairo
 from PIL import Image
@@ -14,6 +15,8 @@ from PIL import Image
 
 GOOGLE_NATIVE_MAP_SIZE = 512
 AFRL_GOOGLE_STATIC_MAPS_KEY = 'AIzaSyBeKwLH_2W_dcbLsnM03B8I56GGYYDxyRY'
+
+VIRTUAL_MAP_CANVAS_SIZE = GOOGLE_NATIVE_MAP_SIZE * 2
 
 
 def generate_map_url(lat, lon, zoom):
@@ -28,26 +31,43 @@ class SidebarWidget (Gtk.Grid):
     pass
 
 
-def pil_to_surface(im):
-    pixels = array.array('B', im.convert('RGBA').tobytes('raw', 'BGRA', 0, 1))
-    return cairo.ImageSurface.create_for_data(pixels, cairo.FORMAT_ARGB32,
-            im.width, im.height, im.width * 4)
-
 def pil_to_pixbuf(im):
-    pixels = im.convert('RGB').tobytes('raw', 'RGB', 0, 1)
-    return GdkPixbuf.Pixbuf.new_from_data(pixels, GdkPixbuf.Colorspace.RGB,
+    pixels = GLib.Bytes(im.convert('RGB').tobytes('raw', 'RGB', 0, 1))
+    return GdkPixbuf.Pixbuf.new_from_bytes(pixels, GdkPixbuf.Colorspace.RGB,
             False, 8, im.width, im.height, im.width * 3)
 
 
 class MapWidget (Gtk.Image):
-    def __init__(self):
+    def __init__(self, win):
         Gtk.Image.__init__(self)
 
-        self.im = Image.open('/home/ros/catkin_ws/test.png')
-        self.update_image()
+        self.win = win
 
-    def update_image(self):
-        self.set_from_pixbuf(pil_to_pixbuf(self.im))
+        self.im = Image.new('RGB', (VIRTUAL_MAP_CANVAS_SIZE,) * 2)
+        self.im.paste(Image.open('/home/ros/catkin_ws/test.png'), (0, 0))
+        self.connect('size-allocate', self.update_image)
+
+    def update_image(self, widget=None, allocation=None, data=None):
+        if allocation is None:
+            allocation = self.get_allocation()
+        win_width, win_height = self.win.get_size()
+        width = min(win_width - 2, allocation.width)
+        height = min(win_height - 2, allocation.height)
+        size = max(width, height)
+        resized = self.im.resize((size,) * 2)
+        x = int(math.ceil((size - width) / 2.0))
+        y = int(math.ceil((size - height) / 2.0))
+        if 2 * x >= resized.width or 2 * y > resized.height:
+            return
+        cropped = resized.crop((x, y, resized.width - x, resized.height - y))
+        pixbuf = pil_to_pixbuf(cropped)
+        self.set_from_pixbuf(pixbuf)
+    
+    def do_get_preferred_width(self):
+        return self.win.get_size().width - 2
+
+    def do_get_preferred_height(self):
+        return self.win.get_size().height - 2
 
 
 class GCSWindow (Gtk.Window):
@@ -55,7 +75,7 @@ class GCSWindow (Gtk.Window):
         Gtk.Window.__init__(self)
 
         self.sidebar = SidebarWidget()
-        self.map = MapWidget()
+        self.map = MapWidget(self)
 
         self.paned = Gtk.Paned()
         self.paned.add1(self.sidebar)
