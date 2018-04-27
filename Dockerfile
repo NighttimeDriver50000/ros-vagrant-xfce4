@@ -90,6 +90,12 @@ WORKDIR /home/ros
 RUN chown ros:ros .
 RUN chown ros:ros *
 RUN chown -R ros:ros .[rv]*
+# Install PyGObject
+RUN apt-get install -y libgtk-3-0 python-gi python-gi-dev python-gi-cairo python-pil
+RUN apt-get install -y gir1.2-gtk-3.0 libgtk-3-dev
+# Add the default roxterm config
+RUN mkdir -p /root/.config/roxterm.sourceforge.net/Profiles
+ADD Default /root/.config/roxterm.sourceforge.net/Profiles/
 # Wipe the Pixhawk memory
 ADD wipe_test_rover.bash /
 # Most things will happen in the catkin workspace
