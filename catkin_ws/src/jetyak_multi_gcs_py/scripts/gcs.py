@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 import array
+import collections
+import csv
+import importlib
 import math
+import os
+import os.path
 import sys
 
 import rospy
+import geometry_msgs.msg
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -13,10 +19,131 @@ import cairo
 from PIL import Image
 
 
-GOOGLE_NATIVE_MAP_SIZE = 512
 AFRL_GOOGLE_STATIC_MAPS_KEY = 'AIzaSyBeKwLH_2W_dcbLsnM03B8I56GGYYDxyRY'
-
+GOOGLE_NATIVE_MAP_SIZE = 512
 VIRTUAL_MAP_CANVAS_SIZE = GOOGLE_NATIVE_MAP_SIZE * 2
+STATUS_CONFIG_FILENAME = 'gcs_status_config.csv'
+STATUS_CONFIG_FILEPATH = os.path.join(os.path.dirname(__file__), STATUS_CONFIG_FILENAME)
+
+
+def load_status_config_field(row, field, default=''):
+    value = row.get(field, '')
+    if value == '':
+        value = default
+    return value
+
+
+class StatusLabel (Gtk.Label):
+    def __init__(self, row):
+        Gtk.Label.__init__(self)
+
+        self.load_fields(row)
+        self.subscriber = rospy.Subscriber(self.topic, self.message, self.update_text) 
+
+        self.set_justify(Gtk.Justification.CENTER)
+        self.update_text()
+
+    def update_text(self, data=None):
+        if data is None:
+            value = self.default
+        else:
+            value = data
+            field, _, factor = self.field.partition('*')
+            if factor == '':
+                factor = 1
+            else:
+                factor = float(factor)
+            for name in field.split('.'):
+                value = getattr(value, name)
+            if isinstance(value, geometry_msgs.msg.Vector3):
+                value = math.sqrt(value.x**2 + value.y**2 + value.z**2)
+            value = self.status_type(value * factor)
+        if self.status_min is None and self.status_max is None:
+            foreground = 'black'
+        elif ((self.status_min is not None and value < self.status_min) or
+                (self.status_max is not None and value > self.status_max)):
+            foreground = 'red'
+        else:
+            foreground = 'green'
+        markup = '<span size="x-small">{}</span>\n<span size="x-large" foreground="{}">{}{}</span>'.format(
+                GLib.markup_escape_text(self.title), foreground,
+                GLib.markup_escape_text('{:.4g}'.format(value)
+                    if self.status_type == float else str(value)), self.unit)
+        self.set_markup(markup)
+
+    def load_fields(self, row):
+        self.identifier = load_status_config_field(row, 'identifier')
+        self.status_type = load_status_config_field(row, 'type').lower()
+        if self.status_type == 'string':
+            self.status_type = str
+        elif self.status_type == 'int':
+            self.status_type = int
+        else:
+            self.status_type = float
+        self.topic = load_status_config_field(row, 'topic', '/rosout')
+        self.message = load_status_config_field(row, 'message', 'std_msgs/Float64')
+        message_parts = self.message.split('/')
+        self.message = getattr(importlib.import_module(message_parts[0] + '.msg'), message_parts[1])
+        self.field = load_status_config_field(row, 'field', 'data')
+        self.unit = load_status_config_field(row, 'unit')
+        self.title = load_status_config_field(row, 'title',  self.identifier.capitalize())
+        self.settable = load_status_config_field(row, 'settable').lower()
+        self.settable = (self.settable == 'true')
+        self.status_min = load_status_config_field(row, 'min')
+        if self.status_min == '':
+            self.status_min = None
+        else:
+            self.status_min = self.status_type(self.status_min)
+        self.status_max = load_status_config_field(row, 'max')
+        if self.status_max == '':
+            self.status_max = None
+        else:
+            self.status_max = self.status_type(self.status_max)
+        self.default = load_status_config_field(row, 'default')
+        if self.default == '':
+            if self.status_type == str:
+                self.default = ''
+            else:
+                self.default = self.status_type(0)
+
+
+def load_status_labels(config_file):
+    labels = collections.OrderedDict()
+    for row in csv.DictReader(config_file):
+        label = StatusLabel(row)
+        labels[label.identifier] = label
+    return labels
+
+
+class StatusWidget (Gtk.Notebook):
+    def __init__(self):
+        Gtk.Notebook.__init__(self)
+
+        with open(STATUS_CONFIG_FILEPATH) as f:
+            self.status_labels = load_status_labels(f)
+
+        self.append_page(self.create_grid(), Gtk.Label('Status'))
+
+    def create_grid(self):
+        grid = Gtk.Grid()
+        grid.set_column_spacing(8)
+        size = int(math.ceil(math.sqrt(len(self.status_labels))))
+        for i in xrange(size):
+            grid.insert_row(i)
+            grid.insert_column(i)
+        for i, label in enumerate(self.status_labels.itervalues()):
+            grid.attach(label, i % size, i / size, 1, 1)
+        return grid
+
+
+class SidebarWidget (Gtk.Grid):
+    def __init__(self):
+        Gtk.Grid.__init__(self)
+
+        self.status = StatusWidget()
+
+        self.insert_row(0)
+        self.attach(self.status, 0, 0, 1, 1)
 
 
 def generate_map_url(lat, lon, zoom):
@@ -25,10 +152,6 @@ def generate_map_url(lat, lon, zoom):
             '&maptype=hybrid&key={key:s}').format(
                     lat=lat, lon=lon, zoom=zoom, size=GOOGLE_NATIVE_MAP_SIZE,
                     key=AFRL_GOOGLE_STATIC_MAPS_KEY)
-
-
-class SidebarWidget (Gtk.Grid):
-    pass
 
 
 def pil_to_pixbuf(im):
