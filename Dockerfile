@@ -93,6 +93,7 @@ RUN chown -R ros:ros .[rv]*
 # Install PyGObject
 RUN apt-get install -y libgtk-3-0 python-gi python-gi-dev python-gi-cairo python-pil
 RUN apt-get install -y gir1.2-gtk-3.0 libgtk-3-dev
+RUN apt-get install -y python-requests python-requests-cache
 # Add the default roxterm config
 RUN mkdir -p /root/.config/roxterm.sourceforge.net/Profiles
 ADD Default /root/.config/roxterm.sourceforge.net/Profiles/

@@ -19,6 +19,12 @@ from gi.repository import Gtk, GdkPixbuf, Gdk, GLib
 import cairo
 from PIL import Image
 
+import requests
+import requests_cache
+requests_cache.install_cache(
+        cache_name=os.path.join(os.path.dirname(__file__), 'gcs_map_cache'),
+        backend='sqlite', expire_after=None, ignored_parameters=['key'])
+
 
 AFRL_GOOGLE_STATIC_MAPS_KEY = 'AIzaSyBeKwLH_2W_dcbLsnM03B8I56GGYYDxyRY'
 GOOGLE_NATIVE_MAP_SIZE = 512
@@ -191,6 +197,13 @@ def generate_map_url(lat, lon, zoom):
                     key=AFRL_GOOGLE_STATIC_MAPS_KEY)
 
 
+def fetch_map_chunk(x, y, zoom):
+    C = float(GOOGLE_NATIVE_MAP_SIZE)
+    lon = 360 * x / C - 180
+    lat = 360 * math.atan(math.exp(4 * math.pi * (y / C - 0.5))) / math.pi - 90
+    pass
+
+
 def pil_to_pixbuf(im):
     pixels = GLib.Bytes(im.convert('RGB').tobytes('raw', 'RGB', 0, 1))
     return GdkPixbuf.Pixbuf.new_from_bytes(pixels, GdkPixbuf.Colorspace.RGB,
@@ -205,9 +218,15 @@ class MapWidget (Gtk.Image):
 
         self.im = Image.new('RGB', (VIRTUAL_MAP_CANVAS_SIZE,) * 2)
         self.im.paste(Image.open('/home/ros/catkin_ws/test.png'), (0, 0))
-        self.connect('size-allocate', self.update_image)
+        self.connect('size-allocate', self.update_display)
+    
+    def do_get_preferred_width(self):
+        return self.win.get_size().width - 2
 
-    def update_image(self, widget=None, allocation=None, data=None):
+    def do_get_preferred_height(self):
+        return self.win.get_size().height - 2
+
+    def update_display(self, widget=None, allocation=None, data=None):
         if allocation is None:
             allocation = self.get_allocation()
         win_width, win_height = self.win.get_size()
@@ -222,12 +241,9 @@ class MapWidget (Gtk.Image):
         cropped = resized.crop((x, y, resized.width - x, resized.height - y))
         pixbuf = pil_to_pixbuf(cropped)
         self.set_from_pixbuf(pixbuf)
-    
-    def do_get_preferred_width(self):
-        return self.win.get_size().width - 2
 
-    def do_get_preferred_height(self):
-        return self.win.get_size().height - 2
+    def update_image(self):
+        pass
 
 
 class GCSWindow (Gtk.Window):
