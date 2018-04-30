@@ -22,3 +22,6 @@ colorscheme torte
 
 " Make Catkin Workspace
 nmap <leader>m :!/home/ros/catkin_ws/make.sh<cr>
+
+" Highlight Searches
+set hlsearch

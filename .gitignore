@@ -9,3 +9,5 @@ mav.tlog
 mav.tlog.raw
 id_rsa
 id_rsa.pub
+*.sqlite
+*.pyc

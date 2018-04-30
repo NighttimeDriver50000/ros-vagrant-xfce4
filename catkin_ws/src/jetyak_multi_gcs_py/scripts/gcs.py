@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import division
+
 import array
 import collections
 import csv
@@ -6,6 +8,7 @@ import importlib
 import math
 import os
 import os.path
+from cStringIO import StringIO
 import sys
 
 import rospy
@@ -142,12 +145,13 @@ class StatusWidget (Gtk.Notebook):
     def create_status_grid(self):
         grid = Gtk.Grid()
         grid.set_column_spacing(8)
-        size = int(math.ceil(math.sqrt(len(self.status_labels))))
-        for i in xrange(size):
-            grid.insert_row(i)
+        width = int(math.ceil(math.sqrt(len(self.status_labels)) / 2))
+        for i in xrange(width):
             grid.insert_column(i)
+        for i in xrange(int(math.ceil(len(self.status_labels) / width))):
+            grid.insert_row(i)
         for i, label in enumerate(self.status_labels.itervalues()):
-            grid.attach(label, i % size, i / size, 1, 1)
+            grid.attach(label, i % width, i // width, 1, 1)
         return grid
 
     def create_action_grid(self):
@@ -197,11 +201,34 @@ def generate_map_url(lat, lon, zoom):
                     key=AFRL_GOOGLE_STATIC_MAPS_KEY)
 
 
-def fetch_map_chunk(x, y, zoom):
-    C = float(GOOGLE_NATIVE_MAP_SIZE)
-    lon = 360 * x / C - 180
-    lat = 360 * math.atan(math.exp(4 * math.pi * (y / C - 0.5))) / math.pi - 90
-    pass
+def x_to_longitude(x):
+    return 360 * ((x / GOOGLE_NATIVE_MAP_SIZE) % 1) - 180
+
+
+def y_to_latitude(y):
+    return 90 - 360 * math.atan(math.exp(2 * math.pi *
+        (y / GOOGLE_NATIVE_MAP_SIZE - 0.5))) / math.pi
+
+    
+GOOGLE_MAP_MAX_LATITUDE = y_to_latitude(0)
+EMPTY_CHUNK = Image.new('RGB', (GOOGLE_NATIVE_MAP_SIZE,) * 2)
+
+
+def fetch_map_chunk(cx, cy, zoom):
+    lon = x_to_longitude(cx)
+    lat = y_to_latitude(cy)
+    if abs(lat) > GOOGLE_MAP_MAX_LATITUDE:
+        return EMPTY_CHUNK
+    url = generate_map_url(lat, lon, zoom)
+    response = requests.get(url, stream=True)
+    if response.status_code != 200:
+        return EMPTY_CHUNK
+    buf = StringIO()
+    for chunk in response:
+        buf.write(chunk)
+    raw = StringIO(buf.getvalue())
+    buf.close()
+    return Image.open(raw)
 
 
 def pil_to_pixbuf(im):
@@ -210,21 +237,61 @@ def pil_to_pixbuf(im):
             False, 8, im.width, im.height, im.width * 3)
 
 
-class MapWidget (Gtk.Image):
+class MapWidget (Gtk.EventBox):
     def __init__(self, win):
-        Gtk.Image.__init__(self)
+        Gtk.EventBox.__init__(self)
 
         self.win = win
 
+        self.map_cx = GOOGLE_NATIVE_MAP_SIZE / 2
+        self.map_cy = GOOGLE_NATIVE_MAP_SIZE / 2
+        self.map_zoom = 2
+        
+        self.button1_down = False
+        self.going_to_update = False
+
+        self.image_widget = Gtk.Image()
+        self.add(self.image_widget)
+
         self.im = Image.new('RGB', (VIRTUAL_MAP_CANVAS_SIZE,) * 2)
-        self.im.paste(Image.open('/home/ros/catkin_ws/test.png'), (0, 0))
+        self.update_image()
         self.connect('size-allocate', self.update_display)
+        self.connect('button-press-event', self.update_buttons)
+        self.connect('button-release-event', self.update_buttons)
+        self.connect('motion-notify-event', self.handle_motion)
     
     def do_get_preferred_width(self):
         return self.win.get_size().width - 2
 
     def do_get_preferred_height(self):
         return self.win.get_size().height - 2
+
+    def update_buttons(self, widget=None, event=None):
+        prev_button1_down = self.button1_down
+        self.button1_down = bool(event.state & Gdk.ModifierType.BUTTON1_MASK)
+        if self.button1_down and not prev_button1_down:
+            self.motion_prev_x = event.x
+            self.motion_prev_y = event.y
+
+    def handle_motion(self, widget, event):
+        self.update_buttons(event=event)
+        self.map_cx -= (event.x - self.motion_prev_x) / 2**(self.map_zoom - 1)
+        self.map_cy -= (event.y - self.motion_prev_y) / 2**(self.map_zoom - 1)
+        self.request_full_update()
+        self.motion_prev_x = event.x
+        self.motion_prev_y = event.y
+
+    def request_full_update(self):
+        if not self.going_to_update:
+            self.going_to_update = True
+            GLib.timeout_add(100, self.do_full_update_now)
+
+    def do_full_update_now(self, user_data=None):
+        self.update_image()
+        self.update_display()
+        self.queue_draw()
+        self.going_to_update = False
+        return False
 
     def update_display(self, widget=None, allocation=None, data=None):
         if allocation is None:
@@ -234,16 +301,27 @@ class MapWidget (Gtk.Image):
         height = min(win_height - 2, allocation.height)
         size = max(width, height)
         resized = self.im.resize((size,) * 2)
-        x = int(math.ceil((size - width) / 2.0))
-        y = int(math.ceil((size - height) / 2.0))
+        x = int(math.ceil((size - width) / 2))
+        y = int(math.ceil((size - height) / 2))
         if 2 * x >= resized.width or 2 * y > resized.height:
             return
         cropped = resized.crop((x, y, resized.width - x, resized.height - y))
         pixbuf = pil_to_pixbuf(cropped)
-        self.set_from_pixbuf(pixbuf)
+        self.image_widget.set_from_pixbuf(pixbuf)
 
     def update_image(self):
-        pass
+        Z = GOOGLE_NATIVE_MAP_SIZE / (2**(self.map_zoom - 1))
+        chunk_x = Z * int(self.map_cx / Z) + Z / 2
+        chunk_y = Z * int(self.map_cy / Z) + Z / 2
+        offset_x = GOOGLE_NATIVE_MAP_SIZE * (1 - ((self.map_cx / Z) % 1))
+        offset_y = GOOGLE_NATIVE_MAP_SIZE * (1 - ((self.map_cy / Z) % 1))
+        for dx in xrange(-1, 2):
+            for dy in xrange(-1, 2):
+                cx = chunk_x + dx * Z
+                cy = chunk_y + dy * Z
+                px = int(offset_x + dx * GOOGLE_NATIVE_MAP_SIZE)
+                py = int(offset_y + dy * GOOGLE_NATIVE_MAP_SIZE)
+                self.im.paste(fetch_map_chunk(cx, cy, self.map_zoom), (px, py))
 
 
 class GCSWindow (Gtk.Window):
