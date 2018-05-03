@@ -31,7 +31,7 @@ if [ -f "$catkin_setup" ]; then
 fi
 
 # Restart container
-alias stop='killall roscore'
+alias stop='killall sleep'
 
 # Ardupilot SITL
 export PATH=$PATH:$HOME/jsbsim/src
@@ -41,3 +41,6 @@ export MAP_SERVICE=OpenStreetMap
 
 # Aliases
 alias ls='ls --color=auto'
+
+# Host roscore
+export ROS_MASTER_URI="http://$(/sbin/ip route | awk '/default/ { print $3 }'):11311/"

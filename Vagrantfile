@@ -3,8 +3,8 @@ Vagrant.configure("2") do |config|
     config.vm.provider "docker" do |d|
         d.build_dir = "."
         d.create_args = ["--restart", "unless-stopped", "--add-host", "firmware.ardupilot.org:127.0.0.1"]
-        d.name = "ros-vagrant"
-        d.ports = ["11311:11311"]
+        d.name = "ros-vagrant-client"
+        #d.ports = ["11311:11311"]
     end
     config.vm.synced_folder "catkin_ws/", "/home/ros/catkin_ws"
 end
