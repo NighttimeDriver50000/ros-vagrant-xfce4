@@ -4,4 +4,4 @@ if [ $SITL ]; then
     sudo -H -u ros authbind --deep /home/ros/catkin_ws/apm_ws/firmware_proxy.py &
 fi
 #sudo -H -u ros bash -c 'source /opt/ros/kinetic/setup.bash && roscore'
-sleep infinity
+sudo -H -u ros sleep infinity
