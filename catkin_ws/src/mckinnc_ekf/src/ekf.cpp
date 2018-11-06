@@ -1,7 +1,5 @@
 #include "mckinnc_ekf/ekf.hpp"
 
-#include <cmath>
-
 namespace mckinnc_ekf {
 
 // 3x3 matrix of doubles
