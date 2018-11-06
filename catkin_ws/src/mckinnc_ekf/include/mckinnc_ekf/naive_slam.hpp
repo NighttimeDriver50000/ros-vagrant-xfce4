@@ -14,7 +14,9 @@ class NaiveSLAM {
         double newLandmarkUncertaintyThreshold);
 
     void run(const Control& control,
-        const std::vector<Observation>& observations);
+        const std::vector<Observation>& observations,
+        double newLandmarkUncertaintyThreshold,
+        double landmarkLikelihoodRadius);
 
     //! \see EKF::mean()
     const Pose& mean() { return ekf_.mean(); }
@@ -26,7 +28,6 @@ class NaiveSLAM {
   protected:
     EKF ekf_;
     std::vector<Landmark> landmarks_;
-    double newLandmarkUncertaintyThreshold_;
 };
 
 } // namespace
