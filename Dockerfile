@@ -99,7 +99,7 @@ RUN apt-get install -y python-catkin-tools
 # Install less
 RUN apt-get install -y less
 # Install turtlebot3 prereqs
-RUN sudo apt-get install ros-kinetic-joy ros-kinetic-teleop-twist-joy \
+RUN sudo apt-get install -y ros-kinetic-joy ros-kinetic-teleop-twist-joy \
     ros-kinetic-teleop-twist-keyboard ros-kinetic-laser-proc \
     ros-kinetic-rgbd-launch ros-kinetic-depthimage-to-laserscan \
     ros-kinetic-rosserial-arduino ros-kinetic-rosserial-python \
