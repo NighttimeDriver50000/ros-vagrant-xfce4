@@ -123,7 +123,7 @@ ADD roscore.bash /
 # Index the file system
 RUN updatedb
 # Use the SITL sim (Comment to disable)
-ENV SITL 1
+#ENV SITL 1
 # WM on start
 #CMD ["bash", "/StartInWM.bash", "awesome"]
 CMD ["bash", "/StartInWM.bash", "awesome", "bash", "/roscore.bash"]
