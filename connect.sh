@@ -4,6 +4,9 @@ if [ "$GCS_CLIENT_MODE" ]; then
 else
     container=ros-vagrant
 fi
+if [ "$RV_XFCE" ]; then
+    container="${container}-xfce"
+fi
 cd "$(dirname "$0")"
 if [ "$1" = 'u' ]; then
     vagrant up

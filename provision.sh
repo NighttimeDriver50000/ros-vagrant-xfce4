@@ -14,10 +14,15 @@ apt-get install -y xvfb
 # Install a VNC server
 apt-get install -y x11vnc iproute2
 # Install a window manager
-apt-get install -y software-properties-common
-add-apt-repository -y ppa:klaus-vormweg/awesome
-apt-get update
-apt-get install -y awesome
+if [ "$1" = xfce ]; then
+    export RV_XFCE=1
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y xubuntu-desktop
+else
+    apt-get install -y software-properties-common
+    add-apt-repository -y ppa:klaus-vormweg/awesome
+    apt-get update
+    apt-get install -y awesome
+fi
 # Install sudo
 apt-get install -y sudo
 # Create a user
@@ -27,12 +32,14 @@ if [ "$USERNAME" != vagrant ]; then
 fi
 echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >>/etc/sudoers
 # Set up awesome
-apt-get install -y awesome-extra roxterm
-cd "/home/$USERNAME"
-mkdir -p .config/awesome
-cp -r /etc/xdg/awesome/debian .config/awesome
-ln -s "/home/$USERNAME/catkin_ws/rc.lua" .config/awesome/rc.lua
-#ADD av8pves.jpg /
+if ! [ "$RV_XFCE" ]; then
+    apt-get install -y awesome-extra roxterm
+    cd "/home/$USERNAME"
+    mkdir -p .config/awesome
+    cp -r /etc/xdg/awesome/debian .config/awesome
+    ln -s "/home/$USERNAME/catkin_ws/rc.lua" .config/awesome/rc.lua
+    #ADD av8pves.jpg /
+fi
 # Install ROS
 sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
@@ -163,7 +170,11 @@ updatedb
 apt-get install -y xorg xinit
 apt-get install -y virtualbox-guest-x11
 apt-get install -y sddm
-echo 'exec awesome' >.xinitrc
+if [ "$RV_XFCE" ]; then
+    echo 'exec xfce4-session' >.xinitrc
+else
+    echo 'exec awesome' >.xinitrc
+fi
 systemctl enable sddm.service
 systemctl set-default graphical.target
 poweroff
