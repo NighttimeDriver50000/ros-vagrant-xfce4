@@ -31,7 +31,11 @@ if [ -f "$catkin_setup" ]; then
 fi
 
 # Restart container
-alias stop='killall sleep'
+if [ "$GCS_CLIENT_MODE" ]; then
+    alias stop='killall sleep'
+else
+    alias stop='killall roscore'
+fi
 
 # Ardupilot SITL
 export PATH=$PATH:$HOME/jsbsim/src
@@ -42,8 +46,8 @@ export MAP_SERVICE=OpenStreetMap
 # Aliases
 alias ls='ls --color=auto'
 
+# Host roscore
 if [ "$GCS_CLIENT_MODE" ]; then
-    # Host roscore
     export ROS_MASTER_URI="http://$(/sbin/ip route | awk '/default/ { print $3 }'):11311/"
     export ROS_IP="$(/sbin/ip addr show dev eth0 | awk '/inet/ { print $2 }' | cut -d/ -f1)"
 fi
