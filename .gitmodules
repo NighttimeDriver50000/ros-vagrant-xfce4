@@ -1,7 +1,3 @@
-[submodule "catkin_ws/src/williamedwards/src"]
-	path = catkin_ws/src/williamedwards/src
-	url = git@github.com:williamedwards/16JetyakSimulator.git
-    branch = mckinney
 [submodule "catkin_ws/src/turtlebot3_msgs"]
 	path = catkin_ws/src/turtlebot3_msgs
 	url = https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
