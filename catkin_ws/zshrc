@@ -2,7 +2,7 @@
 bindkey -v
 
 # Antigen
-source /home/ros/antigen.zsh
+source $HOME/antigen.zsh
 antigen use oh-my-zsh
 
 # Oh-My-Zsh plugins
@@ -25,7 +25,7 @@ source /usr/share/powerline/bindings/zsh/powerline.zsh
 source /opt/ros/kinetic/setup.zsh
 
 # Catkin Workspace
-local catkin_setup=/home/ros/catkin_ws/devel/setup.zsh
+local catkin_setup=$HOME/catkin_ws/devel/setup.zsh
 if [ -f "$catkin_setup" ]; then
     source "$catkin_setup"
 fi
@@ -42,6 +42,14 @@ export MAP_SERVICE=OpenStreetMap
 # Aliases
 alias ls='ls --color=auto'
 
-# Host roscore
-export ROS_MASTER_URI="http://$(/sbin/ip route | awk '/default/ { print $3 }'):11311/"
-export ROS_IP="$(/sbin/ip addr show dev eth0 | awk '/inet/ { print $2 }' | cut -d/ -f1)"
+if [ "$GCS_CLIENT_MODE" ]; then
+    # Host roscore
+    export ROS_MASTER_URI="http://$(/sbin/ip route | awk '/default/ { print $3 }'):11311/"
+    export ROS_IP="$(/sbin/ip addr show dev eth0 | awk '/inet/ { print $2 }' | cut -d/ -f1)"
+fi
+
+# Turtlebot 3 Model
+export TURTLEBOT3_MODEL=waffle_pi
+
+# For VirtualBox
+export TERM=xterm-256color
