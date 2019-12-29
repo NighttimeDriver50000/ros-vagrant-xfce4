@@ -1,19 +1,16 @@
 [submodule "catkin_ws/src/williamedwards/src"]
 	path = catkin_ws/src/williamedwards/src
-	url = https://NighttimeDriver50000@github.com/williamedwards/16JetyakSimulator.git
-	branch = mckinney
-[submodule "catkin_ws/src/jetyak_safety"]
-	path = catkin_ws/src/jetyak_safety
-	url = git@github.com:NighttimeDriver50000/jetyak_safety
-[submodule "jetyak_safety"]
-	path = jetyak_safety
-	url = git@github.com:NighttimeDriver50000/jetyak_safety
+	url = git@github.com:williamedwards/16JetyakSimulator.git
+    branch = mckinney
 [submodule "catkin_ws/src/turtlebot3_msgs"]
 	path = catkin_ws/src/turtlebot3_msgs
 	url = https://github.com/ROBOTIS-GIT/turtlebot3_msgs.git
+    branch = kinetic-devel
 [submodule "catkin_ws/src/turtlebot3"]
 	path = catkin_ws/src/turtlebot3
 	url = https://github.com/ROBOTIS-GIT/turtlebot3.git
+    branch = kinetic-devel
 [submodule "catkin_ws/src/turtlebot3_simulations"]
 	path = catkin_ws/src/turtlebot3_simulations
 	url = https://github.com/ROBOTIS-GIT/turtlebot3_simulations.git
+    branch = kinetic-devel
