@@ -10,4 +10,4 @@ WORKDIR /home/ros/catkin_ws
 # Index the file system
 RUN updatedb
 # WM on start
-CMD ["bash", "/StartInWM.bash", "xfce4-session", "bash", "/roscore.bash"]
+CMD ["bash", "/StartInWM.bash", "xfce4-session", "--900", "bash", "/roscore.bash"]

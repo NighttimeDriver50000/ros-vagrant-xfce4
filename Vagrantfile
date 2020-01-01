@@ -24,16 +24,18 @@ Vagrant.configure("2") do |config|
             d.build_dir = "."
             d.dockerfile = "Xfce.Dockerfile"
             d.create_args = ["--restart", "unless-stopped", "--add-host", "firmware.ardupilot.org:127.0.0.1", "--env", "RV_XFCE=1", "--env", "GCS_CLIENT_MODE=1"]
-            d.name = "ros-vagrant-client-xfce"
+            d.name = "rv-client-xfce"
             #d.ports = ["11311:11311"]
+            override.vm.synced_folder "catkin_ws/", "/home/ros/catkin_ws"
         end
     end
     config.vm.define "rv-client", autostart: false do |vconfig|
         vconfig.vm.provider "docker" do |d, override|
             d.build_dir = "."
             d.create_args = ["--restart", "unless-stopped", "--add-host", "firmware.ardupilot.org:127.0.0.1", "--env", "GCS_CLIENT_MODE=1"]
-            d.name = "ros-vagrant-client"
+            d.name = "rv-client"
             #d.ports = ["11311:11311"]
+            override.vm.synced_folder "catkin_ws/", "/home/ros/catkin_ws"
         end
     end
     config.vm.define "xiaofeng-ekf-xfce", autostart: false do |vconfig|
@@ -42,7 +44,7 @@ Vagrant.configure("2") do |config|
             v.gui = true
             v.linked_clone = true
             v.memory = 8192
-            v.name = 'ros-vagrant-xiaofeng-ekf-xfce'
+            v.name = 'xiaofeng-ekf-xfce'
             v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64", "--vram", "256",
                         "--acpi", "on", "--ioapic", "on", "--hwvirtex", "on"]
             override.vm.box = "bento/ubuntu-16.04"
@@ -62,7 +64,7 @@ Vagrant.configure("2") do |config|
             v.gui = true
             v.linked_clone = true
             v.memory = 8192
-            v.name = 'ros-vagrant-xiaofeng-ekf'
+            v.name = 'xiaofeng-ekf'
             v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64", "--vram", "256",
                         "--acpi", "on", "--ioapic", "on", "--hwvirtex", "on"]
             override.vm.box = "bento/ubuntu-16.04"

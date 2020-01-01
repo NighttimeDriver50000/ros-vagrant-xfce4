@@ -19,4 +19,4 @@ WORKDIR /home/ros/catkin_ws
 # Index the file system
 RUN updatedb
 # WM on start
-CMD ["bash", "/StartInWM.bash", "awesome", "bash", "/roscore.bash"]
+CMD ["bash", "/StartInWM.bash", "awesome", "--900", "bash", "/roscore.bash"]

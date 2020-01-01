@@ -98,6 +98,7 @@ RUN sudo apt-get install -y ros-kinetic-joy ros-kinetic-teleop-twist-joy \
     ros-kinetic-compressed-image-transport ros-kinetic-rqt-image-view \
     ros-kinetic-gmapping ros-kinetic-navigation ros-kinetic-interactive-markers
 # Add the default roxterm config
+RUN apt-get install -y roxterm
 RUN mkdir -p /root/.config/roxterm.sourceforge.net/Profiles
 ADD Default /root/.config/roxterm.sourceforge.net/Profiles/
 # Wipe the Pixhawk memory
