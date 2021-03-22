@@ -41,7 +41,7 @@ WORKDIR /home/ros/.vim/bundle
 RUN git clone https://github.com/Valloric/YouCompleteMe.git
 WORKDIR /home/ros/.vim/bundle/YouCompleteMe
 RUN git submodule update --init --recursive
-RUN ./install.py --clang-completer
+#RUN ./install.py --clang-completer
 # Run vim once
 RUN mv /home/ros/.vimrc.source /home/ros/.vimrc
 WORKDIR /home/ros/.vim/bundle
@@ -49,7 +49,7 @@ RUN sh -c 'echo ":quit" | vim -E'
 # Install ardupilot prerequisites
 RUN apt-get install -y python-matplotlib python-serial python-wxgtk3.0 python-wxtools python-lxml
 RUN apt-get install -y python-scipy python-opencv ccache gawk git python-pip python-pexpect
-RUN pip install --upgrade pip
+#RUN pip install --upgrade pip
 RUN pip install future
 RUN pip install pymavlink MAVProxy
 # Download ardupilot
